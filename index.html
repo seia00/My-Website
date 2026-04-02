@@ -1,0 +1,1288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Seia Funayama — competitive debater, developer, and creator based in Japan.">
+  <title>Seia Funayama</title>
+  <link rel="icon" href="pictures/shinji.jpg" type="image/jpeg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* ============================================================
+       DESIGN TOKENS
+    ============================================================ */
+    :root {
+      /* Surface */
+      --bg:          #ffffff;
+      --bg-2:        #fafafa;
+      --bg-3:        #f4f4f5;
+      --bg-4:        #eeeeef;
+
+      /* Text */
+      --t1:  #0f0f0f;
+      --t2:  #52525b;
+      --t3:  #a1a1aa;
+
+      /* Border */
+      --b1:  #e4e4e7;
+      --b2:  #d4d4d8;
+
+      /* Accent — warm orange */
+      --acc:       #e8622a;
+      --acc-h:     #d4561e;
+      --acc-bg:    rgba(232, 98, 42, 0.07);
+      --acc-ring:  rgba(232, 98, 42, 0.18);
+
+      /* Blue — team awards */
+      --blue:      #2563eb;
+      --blue-bg:   rgba(37, 99, 235, 0.07);
+      --blue-ring: rgba(37, 99, 235, 0.2);
+
+      /* Shadows */
+      --sh-xs: 0 1px 2px rgba(0,0,0,0.05);
+      --sh-sm: 0 1px 3px rgba(0,0,0,0.06), 0 4px 8px rgba(0,0,0,0.04);
+      --sh-md: 0 4px 16px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04);
+
+      /* Layout */
+      --nav-h:  58px;
+      --max-w:  860px;
+      --pad-x:  24px;
+
+      /* Radius */
+      --r-s: 6px;
+      --r-m: 10px;
+      --r-l: 14px;
+      --r-xl: 18px;
+
+      /* Transition */
+      --ease: cubic-bezier(0.4, 0, 0.2, 1);
+      --dur:  0.18s;
+    }
+
+    /* Dark mode */
+    body.dark {
+      --bg:  #0c0c0c;
+      --bg-2: #141414;
+      --bg-3: #1c1c1e;
+      --bg-4: #242426;
+      --t1:  #f0f0f0;
+      --t2:  #a1a1aa;
+      --t3:  #52525b;
+      --b1:  #27272a;
+      --b2:  #3f3f46;
+      --sh-xs: 0 1px 2px rgba(0,0,0,0.4);
+      --sh-sm: 0 1px 3px rgba(0,0,0,0.4), 0 4px 8px rgba(0,0,0,0.25);
+      --sh-md: 0 4px 16px rgba(0,0,0,0.3), 0 1px 3px rgba(0,0,0,0.25);
+    }
+
+    /* ============================================================
+       RESET + BASE
+    ============================================================ */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--t1);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      transition: background var(--dur) var(--ease), color var(--dur) var(--ease);
+      overflow-x: hidden;
+    }
+
+    img { display: block; max-width: 100%; }
+    button { font-family: inherit; cursor: pointer; }
+    a { color: inherit; }
+
+    /* ============================================================
+       NAVIGATION
+    ============================================================ */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      height: var(--nav-h);
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border-bottom: 1px solid var(--b1);
+      transition: background var(--dur) var(--ease), border-color var(--dur) var(--ease);
+    }
+    body.dark .nav { background: rgba(12, 12, 12, 0.85); }
+
+    .nav-inner {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 var(--pad-x);
+      height: 100%;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .nav-brand {
+      font-size: 14.5px;
+      font-weight: 700;
+      color: var(--t1);
+      letter-spacing: -0.4px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    /* Dot separator */
+    .nav-sep {
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--b2);
+      flex-shrink: 0;
+    }
+
+    .nav-tabs {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 1px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+    .nav-tabs::-webkit-scrollbar { display: none; }
+
+    .nav-tab {
+      display: inline-flex;
+      align-items: center;
+      padding: 5px 11px;
+      border-radius: var(--r-s);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--t2);
+      white-space: nowrap;
+      background: none;
+      border: none;
+      transition: background var(--dur) var(--ease), color var(--dur) var(--ease);
+      outline: none;
+    }
+    .nav-tab:hover { color: var(--t1); background: var(--bg-3); }
+    .nav-tab.active {
+      color: var(--t1);
+      background: var(--bg-3);
+      font-weight: 600;
+    }
+    .nav-tab:focus-visible {
+      outline: 2px solid var(--acc);
+      outline-offset: 2px;
+    }
+
+    .nav-end { flex-shrink: 0; }
+
+    .theme-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 1px solid var(--b1);
+      background: var(--bg);
+      color: var(--t2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      transition: all var(--dur) var(--ease);
+    }
+    .theme-btn:hover {
+      background: var(--bg-3);
+      border-color: var(--b2);
+      color: var(--t1);
+    }
+    .theme-btn:focus-visible {
+      outline: 2px solid var(--acc);
+      outline-offset: 2px;
+    }
+
+    /* ============================================================
+       MAIN LAYOUT
+    ============================================================ */
+    main { min-height: calc(100vh - var(--nav-h) - 60px); }
+
+    .section {
+      display: none;
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 72px var(--pad-x) 80px;
+    }
+    .section.active {
+      display: block;
+      animation: fade-up 0.32s var(--ease) both;
+    }
+    @keyframes fade-up {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0);    }
+    }
+
+    /* ============================================================
+       SECTION LABELS (shared)
+    ============================================================ */
+    .s-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--acc);
+      margin-bottom: 12px;
+    }
+    .s-eyebrow::before {
+      content: '';
+      display: inline-block;
+      width: 14px;
+      height: 1.5px;
+      background: var(--acc);
+      border-radius: 2px;
+    }
+
+    .s-title {
+      font-size: clamp(26px, 5vw, 34px);
+      font-weight: 800;
+      letter-spacing: -1.2px;
+      line-height: 1.1;
+      color: var(--t1);
+      margin-bottom: 8px;
+    }
+
+    .s-sub {
+      font-size: 15px;
+      color: var(--t2);
+      line-height: 1.65;
+      margin-bottom: 44px;
+    }
+
+    /* ============================================================
+       HERO
+    ============================================================ */
+    #welcome {
+      padding-top: 108px;
+      padding-bottom: 108px;
+      /* Subtle dot grid */
+      background-image: radial-gradient(circle, var(--b1) 1px, transparent 1px);
+      background-size: 26px 26px;
+      background-position: -13px -13px;
+    }
+    body.dark #welcome {
+      background-image: radial-gradient(circle, var(--bg-3) 1px, transparent 1px);
+    }
+
+    .hero { max-width: 580px; position: relative; z-index: 1; }
+
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--acc);
+      margin-bottom: 28px;
+    }
+    .hero-tag::before {
+      content: '';
+      display: inline-block;
+      width: 14px;
+      height: 1.5px;
+      background: var(--acc);
+      border-radius: 2px;
+    }
+
+    .hero h1 {
+      font-size: clamp(46px, 9vw, 78px);
+      font-weight: 800;
+      letter-spacing: -3px;
+      line-height: 1.02;
+      color: var(--t1);
+      margin-bottom: 22px;
+    }
+
+    .hero-roles {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 4px 0;
+      font-size: 17px;
+      color: var(--t2);
+      font-weight: 400;
+      margin-bottom: 20px;
+    }
+    .hero-roles .sep { color: var(--t3); margin: 0 8px; }
+
+    .hero-desc {
+      font-size: 16px;
+      color: var(--t2);
+      line-height: 1.75;
+      margin-bottom: 44px;
+      max-width: 460px;
+    }
+
+    .hero-ctas {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 10px 20px;
+      border-radius: var(--r-m);
+      font-size: 13.5px;
+      font-weight: 600;
+      transition: all var(--dur) var(--ease);
+      text-decoration: none;
+      border: 1px solid transparent;
+    }
+    .btn:focus-visible { outline: 2px solid var(--acc); outline-offset: 2px; }
+
+    .btn-dark {
+      background: var(--t1);
+      color: var(--bg);
+      border-color: var(--t1);
+    }
+    .btn-dark:hover { opacity: 0.82; transform: translateY(-1px); }
+
+    .btn-ghost {
+      background: var(--bg);
+      color: var(--t1);
+      border-color: var(--b2);
+    }
+    .btn-ghost:hover { background: var(--bg-3); transform: translateY(-1px); }
+
+    /* ============================================================
+       DEBATE — Stats
+    ============================================================ */
+    .stat-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 32px;
+    }
+
+    .stat-card {
+      border: 1px solid var(--b1);
+      border-radius: var(--r-l);
+      padding: 20px 16px;
+      text-align: center;
+      background: var(--bg-2);
+      transition: border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease), transform var(--dur) var(--ease);
+    }
+    .stat-card:hover {
+      border-color: var(--b2);
+      box-shadow: var(--sh-sm);
+      transform: translateY(-2px);
+    }
+    .stat-n {
+      display: block;
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: -1.5px;
+      color: var(--t1);
+    }
+    .stat-l {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: var(--t3);
+      margin-top: 3px;
+    }
+
+    /* ============================================================
+       DEBATE — Filter bar
+    ============================================================ */
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 28px;
+    }
+
+    .f-btn {
+      padding: 6px 15px;
+      border-radius: 30px;
+      border: 1px solid var(--b1);
+      background: var(--bg);
+      color: var(--t2);
+      font-size: 13px;
+      font-weight: 500;
+      transition: all var(--dur) var(--ease);
+    }
+    .f-btn:hover { border-color: var(--b2); color: var(--t1); }
+    .f-btn.active {
+      background: var(--t1);
+      border-color: var(--t1);
+      color: var(--bg);
+    }
+    .f-btn:focus-visible { outline: 2px solid var(--acc); outline-offset: 2px; }
+
+    /* ============================================================
+       DEBATE — Year accordion
+    ============================================================ */
+    .year-list { display: flex; flex-direction: column; gap: 10px; }
+
+    .yr-block {
+      border: 1px solid var(--b1);
+      border-radius: var(--r-l);
+      overflow: hidden;
+      transition: border-color var(--dur) var(--ease);
+    }
+    .yr-block:hover { border-color: var(--b2); }
+
+    .yr-btn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 15px 18px;
+      background: var(--bg-2);
+      border: none;
+      text-align: left;
+      transition: background var(--dur) var(--ease);
+    }
+    .yr-btn:hover { background: var(--bg-3); }
+    .yr-btn:focus-visible { outline: 2px solid var(--acc); outline-offset: -2px; }
+
+    .yr-left { display: flex; align-items: center; gap: 10px; }
+
+    .yr-label {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--t1);
+      letter-spacing: -0.4px;
+    }
+
+    .yr-pill {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--t3);
+      background: var(--bg-4);
+      border: 1px solid var(--b1);
+      padding: 2px 9px;
+      border-radius: 20px;
+      letter-spacing: 0.02em;
+    }
+
+    .yr-arrow {
+      font-size: 10px;
+      color: var(--t3);
+      transition: transform 0.28s var(--ease);
+    }
+    .yr-block.open .yr-arrow { transform: rotate(180deg); }
+
+    .yr-body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.38s var(--ease);
+    }
+    .yr-block.open .yr-body { max-height: 3200px; }
+
+    .yr-inner {
+      padding: 10px 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    /* ============================================================
+       DEBATE — Achievement item
+    ============================================================ */
+    .ach {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 14px;
+      border-radius: var(--r-m);
+      background: var(--bg);
+      border: 1px solid var(--b1);
+      transition: border-color var(--dur) var(--ease), transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+    }
+    body.dark .ach { background: var(--bg-2); }
+    .ach:hover {
+      border-color: var(--b2);
+      transform: translateX(4px);
+      box-shadow: var(--sh-xs);
+    }
+    .ach.hidden { display: none; }
+
+    .ach-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .ach-dot.team       { background: var(--blue); }
+    .ach-dot.individual { background: var(--acc); }
+
+    .ach-body { flex: 1; min-width: 0; }
+
+    .ach-tournament {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--t1);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .ach-award {
+      font-size: 12.5px;
+      color: var(--t2);
+      margin-top: 1px;
+      line-height: 1.4;
+    }
+
+    .ach-badge {
+      flex-shrink: 0;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 9px;
+      border-radius: 20px;
+      letter-spacing: 0.02em;
+    }
+    .ach-badge.team {
+      background: var(--blue-bg);
+      color: var(--blue);
+      border: 1px solid var(--blue-ring);
+    }
+    .ach-badge.individual {
+      background: var(--acc-bg);
+      color: var(--acc);
+      border: 1px solid var(--acc-ring);
+    }
+
+    /* ============================================================
+       PROJECT CARDS
+    ============================================================ */
+    .proj-list { display: flex; flex-direction: column; gap: 16px; }
+
+    .proj-card {
+      border: 1px solid var(--b1);
+      border-radius: var(--r-xl);
+      padding: 26px;
+      background: var(--bg);
+      transition: border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+    }
+    body.dark .proj-card { background: var(--bg-2); }
+    .proj-card:hover {
+      border-color: var(--b2);
+      box-shadow: var(--sh-md);
+    }
+
+    .proj-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .proj-name {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--t1);
+      letter-spacing: -0.4px;
+    }
+
+    .proj-badge {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 20px;
+      border: 1px solid var(--b1);
+      color: var(--t3);
+      white-space: nowrap;
+      flex-shrink: 0;
+      letter-spacing: 0.02em;
+    }
+
+    .proj-desc {
+      font-size: 14px;
+      color: var(--t2);
+      line-height: 1.75;
+      margin-bottom: 16px;
+    }
+
+    .proj-imgs {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .proj-img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      border-radius: var(--r-m);
+      border: 1px solid var(--b1);
+      transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease), border-color var(--dur) var(--ease);
+      cursor: zoom-in;
+    }
+    .proj-img:hover {
+      transform: scale(1.025);
+      box-shadow: var(--sh-md);
+      border-color: var(--b2);
+    }
+
+    .proj-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--acc);
+      text-decoration: none;
+      transition: gap var(--dur) var(--ease), color var(--dur) var(--ease);
+    }
+    .proj-link:hover { color: var(--acc-h); gap: 8px; }
+
+    .note-strip {
+      margin-top: 8px;
+      padding: 14px 18px;
+      background: var(--bg-2);
+      border: 1px solid var(--b1);
+      border-radius: var(--r-m);
+      font-size: 13.5px;
+      color: var(--t2);
+    }
+    .note-strip b { color: var(--t1); }
+
+    /* ============================================================
+       VIDEO EDITING
+    ============================================================ */
+    .video-wrap {
+      border: 1px solid var(--b1);
+      border-radius: var(--r-xl);
+      overflow: hidden;
+      margin-top: 24px;
+    }
+    .video-img {
+      width: 100%;
+      height: 380px;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.4s var(--ease);
+    }
+    .video-wrap:hover .video-img { transform: scale(1.015); }
+
+    /* ============================================================
+       CONTACT
+    ============================================================ */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+      gap: 10px;
+    }
+
+    .contact-card {
+      border: 1px solid var(--b1);
+      border-radius: var(--r-l);
+      padding: 20px 16px;
+      background: var(--bg);
+      text-align: center;
+      transition: border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease), transform var(--dur) var(--ease);
+    }
+    body.dark .contact-card { background: var(--bg-2); }
+    .contact-card:hover {
+      border-color: var(--b2);
+      box-shadow: var(--sh-md);
+      transform: translateY(-3px);
+    }
+
+    .contact-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: var(--bg-3);
+      border: 1px solid var(--b1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      margin: 0 auto 12px;
+    }
+
+    .contact-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--t1);
+      margin-bottom: 5px;
+    }
+
+    .contact-val {
+      font-size: 12.5px;
+      color: var(--t2);
+      text-decoration: none;
+      word-break: break-all;
+      transition: color var(--dur) var(--ease);
+    }
+    a.contact-val:hover { color: var(--acc); }
+
+    /* ============================================================
+       FOOTER
+    ============================================================ */
+    .site-footer {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 24px var(--pad-x) 40px;
+      border-top: 1px solid var(--b1);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .footer-text {
+      font-size: 12.5px;
+      color: var(--t3);
+    }
+
+    .footer-dot {
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: var(--b2);
+      display: inline-block;
+      vertical-align: middle;
+      margin: 0 7px;
+    }
+
+    /* ============================================================
+       LIGHTBOX
+    ============================================================ */
+    .lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 999;
+      background: rgba(0, 0, 0, 0.82);
+      backdrop-filter: blur(6px);
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      animation: lb-in 0.2s var(--ease);
+    }
+    .lightbox.open { display: flex; }
+    @keyframes lb-in {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    .lightbox-img {
+      max-width: 90vw;
+      max-height: 85vh;
+      border-radius: var(--r-l);
+      box-shadow: 0 24px 80px rgba(0,0,0,0.5);
+      animation: lb-img 0.22s var(--ease);
+      object-fit: contain;
+    }
+    @keyframes lb-img {
+      from { transform: scale(0.92); }
+      to   { transform: scale(1); }
+    }
+
+    .lightbox-close {
+      position: fixed;
+      top: 20px;
+      right: 24px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: #fff;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background var(--dur) var(--ease);
+    }
+    .lightbox-close:hover { background: rgba(255,255,255,0.25); }
+
+    /* ============================================================
+       RESPONSIVE
+    ============================================================ */
+    @media (max-width: 640px) {
+      :root { --pad-x: 16px; }
+
+      .section { padding: 52px var(--pad-x) 64px; }
+      #welcome  { padding-top: 80px; padding-bottom: 80px; }
+
+      .nav-inner { gap: 10px; }
+      .nav-sep   { display: none; }
+
+      .hero h1 { letter-spacing: -2px; }
+
+      .stat-row { gap: 8px; }
+      .stat-n   { font-size: 26px; }
+
+      .proj-imgs { grid-template-columns: 1fr 1fr; }
+      .proj-img  { height: 120px; }
+
+      .video-img { height: 220px; }
+
+      .contact-grid { grid-template-columns: 1fr 1fr; }
+
+      .site-footer { flex-direction: column; gap: 6px; }
+    }
+
+    @media (max-width: 420px) {
+      .hero h1  { font-size: 40px; letter-spacing: -1.5px; }
+      .stat-n   { font-size: 22px; }
+      .stat-l   { font-size: 10px; }
+      .proj-imgs { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ── Navigation ─────────────────────────────────────────── -->
+  <nav class="nav" aria-label="Main navigation">
+    <div class="nav-inner">
+      <span class="nav-brand">Seia Funayama</span>
+      <div class="nav-sep" aria-hidden="true"></div>
+
+      <div class="nav-tabs" role="tablist" aria-label="Site sections">
+        <button class="nav-tab active" role="tab" data-tab="welcome"      aria-selected="true"  aria-controls="welcome">Home</button>
+        <button class="nav-tab"        role="tab" data-tab="debate"       aria-selected="false" aria-controls="debate">Debate</button>
+        <button class="nav-tab"        role="tab" data-tab="programming"  aria-selected="false" aria-controls="programming">Programming</button>
+        <button class="nav-tab"        role="tab" data-tab="video"        aria-selected="false" aria-controls="video">Video</button>
+        <button class="nav-tab"        role="tab" data-tab="projects"     aria-selected="false" aria-controls="projects">Projects</button>
+        <button class="nav-tab"        role="tab" data-tab="contact"      aria-selected="false" aria-controls="contact">Contact</button>
+      </div>
+
+      <div class="nav-end">
+        <button class="theme-btn" id="themeBtn" aria-label="Switch to dark mode" title="Toggle theme">🌙</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ── Main content ───────────────────────────────────────── -->
+  <main>
+
+    <!-- Welcome ───────────────────────── -->
+    <section class="section active" id="welcome" role="tabpanel" aria-label="Welcome">
+      <div class="hero">
+        <div class="hero-tag" aria-hidden="true">Portfolio · 2024–2025</div>
+        <h1>Hi, I'm<br>Seia.</h1>
+        <p class="hero-roles">
+          <span>Debater</span><span class="sep" aria-hidden="true">·</span>
+          <span>Developer</span><span class="sep" aria-hidden="true">·</span>
+          <span>Creator</span>
+        </p>
+        <p class="hero-desc">
+          I compete in international debate tournaments, build tools for
+          the debate community, and occasionally edit videos. Based in Japan.
+        </p>
+        <div class="hero-ctas">
+          <button class="btn btn-dark" onclick="switchTab('debate')">View Achievements →</button>
+          <button class="btn btn-ghost" onclick="switchTab('contact')">Get in Touch</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Debate ────────────────────────── -->
+    <section class="section" id="debate" role="tabpanel" aria-label="Debate achievements">
+      <div class="s-eyebrow" aria-hidden="true">Achievements</div>
+      <h2 class="s-title">Debate</h2>
+      <p class="s-sub">International competitive results across 2024–2025.</p>
+
+      <div class="stat-row" aria-label="Achievement summary">
+        <div class="stat-card">
+          <span class="stat-n">14</span>
+          <span class="stat-l">Tournaments</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-n">13</span>
+          <span class="stat-l">Team Awards</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-n">14</span>
+          <span class="stat-l">Speaker Awards</span>
+        </div>
+      </div>
+
+      <div class="filter-bar" role="group" aria-label="Filter by award type">
+        <button class="f-btn active" data-filter="all">All</button>
+        <button class="f-btn" data-filter="team">Team Awards</button>
+        <button class="f-btn" data-filter="individual">Speaker Awards</button>
+      </div>
+
+      <div class="year-list" id="yearList" aria-live="polite">
+        <!-- Rendered by JS -->
+      </div>
+    </section>
+
+    <!-- Programming ───────────────────── -->
+    <section class="section" id="programming" role="tabpanel" aria-label="Programming projects">
+      <div class="s-eyebrow" aria-hidden="true">Projects</div>
+      <h2 class="s-title">Programming</h2>
+      <p class="s-sub">Tools and platforms built mostly for the debate community.</p>
+
+      <div class="proj-list">
+
+        <article class="proj-card">
+          <div class="proj-head">
+            <h3 class="proj-name">DiscourseAI</h3>
+            <span class="proj-badge">In Development</span>
+          </div>
+          <p class="proj-desc">
+            A custom SLM built specifically for debate. Early versions using
+            ChatGPT's LLM are available on GitHub — currently working on a
+            custom model, deep in the data extraction phase.
+          </p>
+          <div class="proj-imgs">
+            <img src="pictures/Discourse1.png"  alt="DiscourseAI interface"       class="proj-img">
+            <img src="pictures/Discourse2.png"  alt="DiscourseAI second view"     class="proj-img">
+          </div>
+        </article>
+
+        <article class="proj-card">
+          <div class="proj-head">
+            <h3 class="proj-name">DebatersArk</h3>
+            <span class="proj-badge">Open Source</span>
+          </div>
+          <p class="proj-desc">
+            A free, open-source debate database spanning WUDC 2001 to the
+            latest WSDC motions. Goal: a single global hub for debaters everywhere.
+          </p>
+          <div class="proj-imgs">
+            <img src="pictures/DebatersArk1.png" alt="DebatersArk homepage"      class="proj-img">
+            <img src="pictures/DebatersArk2.png" alt="DebatersArk database view" class="proj-img">
+            <img src="pictures/DebatersArk3.png" alt="DebatersArk search view"   class="proj-img">
+          </div>
+        </article>
+
+        <article class="proj-card">
+          <div class="proj-head">
+            <h3 class="proj-name">EN2U</h3>
+            <span class="proj-badge">Live</span>
+          </div>
+          <p class="proj-desc">
+            A youth-led non-profit in Japan connecting 13–18 year olds who
+            teach English to peers in underprivileged areas. I built the website.
+          </p>
+          <div class="proj-imgs">
+            <img src="pictures/EN2U1.png" alt="EN2U website homepage" class="proj-img">
+          </div>
+          <a href="https://en2u.vercel.app/" target="_blank" rel="noopener noreferrer" class="proj-link">
+            Visit Website →
+          </a>
+        </article>
+
+        <article class="proj-card">
+          <div class="proj-head">
+            <h3 class="proj-name">This Website</h3>
+            <span class="proj-badge">Live</span>
+          </div>
+          <p class="proj-desc">
+            Built to compile my projects and give people a clean way to get to know me.
+          </p>
+        </article>
+      </div>
+
+      <p class="note-strip">
+        <b>Note —</b> Most projects are on my GitHub. Check the Contact section for the link.
+      </p>
+    </section>
+
+    <!-- Video Editing ─────────────────── -->
+    <section class="section" id="video" role="tabpanel" aria-label="Video editing">
+      <div class="s-eyebrow" aria-hidden="true">Creative</div>
+      <h2 class="s-title">Video Editing</h2>
+      <p class="s-sub">
+        5+ years of intermediate experience — from travel agency content to school
+        productions. Currently using DaVinci Resolve 20.1.
+      </p>
+      <div class="video-wrap">
+        <img src="pictures/videoediting.png" alt="Video editing workspace screenshot" class="video-img">
+      </div>
+    </section>
+
+    <!-- Other Projects ────────────────── -->
+    <section class="section" id="projects" role="tabpanel" aria-label="Other projects">
+      <div class="s-eyebrow" aria-hidden="true">Community</div>
+      <h2 class="s-title">Other Projects</h2>
+      <p class="s-sub">Initiatives beyond code — building communities and creating opportunities.</p>
+
+      <div class="proj-list">
+
+        <article class="proj-card">
+          <div class="proj-head">
+            <h3 class="proj-name">EN2U</h3>
+            <span class="proj-badge">Non-profit</span>
+          </div>
+          <p class="proj-desc">
+            A youth-led organization in Japan where 13–18 year olds mentor peers in
+            underprivileged areas through high-quality English lessons via Zoom.
+            We've worked with children from Gaza and partnered with non-profits for
+            linguistic consulting.
+          </p>
+          <div class="proj-imgs">
+            <img src="pictures/EN2U1.png" alt="EN2U organization website" class="proj-img">
+          </div>
+        </article>
+
+        <article class="proj-card">
+          <div class="proj-head">
+            <h3 class="proj-name">JCSD</h3>
+            <span class="proj-badge">Community</span>
+          </div>
+          <p class="proj-desc">
+            A debate hub connecting Japanese debaters nationwide. I serve as Manager
+            and ER Director — I built a custom Discord bot and participate as a
+            regular debater and judge.
+          </p>
+          <a href="https://linktr.ee/JCSD.JCSD" target="_blank" rel="noopener noreferrer" class="proj-link">
+            View Linktree →
+          </a>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- Contact ───────────────────────── -->
+    <section class="section" id="contact" role="tabpanel" aria-label="Contact information">
+      <div class="s-eyebrow" aria-hidden="true">Connect</div>
+      <h2 class="s-title">Get in Touch</h2>
+      <p class="s-sub">Reach out through any of the platforms below.</p>
+
+      <div class="contact-grid">
+        <div class="contact-card">
+          <div class="contact-icon" aria-hidden="true">📷</div>
+          <div class="contact-name">Instagram</div>
+          <a href="https://www.instagram.com/seiafunayama/" target="_blank" rel="noopener noreferrer" class="contact-val">@seiafunayama</a>
+        </div>
+        <div class="contact-card">
+          <div class="contact-icon" aria-hidden="true">💼</div>
+          <div class="contact-name">LinkedIn</div>
+          <a href="https://www.linkedin.com/in/seiafunayama/" target="_blank" rel="noopener noreferrer" class="contact-val">Seia Funayama</a>
+        </div>
+        <div class="contact-card">
+          <div class="contact-icon" aria-hidden="true">👥</div>
+          <div class="contact-name">Facebook</div>
+          <a href="https://www.facebook.com/profile.php?id=61580408608136" target="_blank" rel="noopener noreferrer" class="contact-val">View Profile</a>
+        </div>
+        <div class="contact-card">
+          <div class="contact-icon" aria-hidden="true">📧</div>
+          <div class="contact-name">Email</div>
+          <a href="mailto:Funayamad31@gmail.com" class="contact-val">Funayamad31@gmail.com</a>
+        </div>
+        <div class="contact-card">
+          <div class="contact-icon" aria-hidden="true">💬</div>
+          <div class="contact-name">Discord</div>
+          <span class="contact-val">sei_a000</span>
+        </div>
+        <div class="contact-card">
+          <div class="contact-icon" aria-hidden="true">💻</div>
+          <div class="contact-name">GitHub</div>
+          <a href="https://github.com/seia00" target="_blank" rel="noopener noreferrer" class="contact-val">seia00</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ── Footer ─────────────────────────────────────────────── -->
+  <footer class="site-footer" aria-label="Site footer">
+    <span class="footer-text">Seia Funayama</span>
+    <span class="footer-text">
+      Built with HTML &amp; CSS
+      <span class="footer-dot" aria-hidden="true"></span>
+      Japan
+    </span>
+  </footer>
+
+  <!-- ── Lightbox ───────────────────────────────────────────── -->
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Image viewer">
+    <button class="lightbox-close" id="lbClose" aria-label="Close image viewer">✕</button>
+    <img class="lightbox-img" id="lbImg" src="" alt="">
+  </div>
+
+  <!-- ── Script ─────────────────────────────────────────────── -->
+  <script>
+    'use strict';
+
+    /* ── Achievement data ───────────────────────────────────── */
+    const DATA = {
+      2025: [
+        { t: 'PDA',                    a: '5th Best Team',                                        type: 'team'       },
+        { t: 'PDA',                    a: 'Best Speaker',                                         type: 'individual' },
+        { t: 'KDO',                    a: 'Rookie Finalist',                                      type: 'team'       },
+        { t: 'KDO',                    a: '2nd Best Rookie Speaker',                              type: 'individual' },
+        { t: 'Kamalig Novice AP',      a: '3rd Breaking Team',                                    type: 'team'       },
+        { t: 'Kamalig Novice AP',      a: '2nd Best Open Speaker · Best High School Speaker',     type: 'individual' },
+        { t: 'Curtin Debate Open',     a: '14th Breaking Team (Novice)',                          type: 'team'       },
+        { t: 'Curtin Debate Open',     a: '5th Best Novice Speaker',                             type: 'individual' },
+        { t: 'TSO 2025',               a: 'Semifinalist',                                         type: 'team'       },
+        { t: 'TSO 2025',               a: '7th Best Open Speaker · 3rd Best Novice Speaker',     type: 'individual' },
+        { t: 'Calcutta Debate Open',   a: 'Open Quarterfinalist',                                type: 'team'       },
+        { t: 'Vivataam Pre-ABP',       a: 'Novice Quarter Finalist',                             type: 'team'       },
+        { t: 'Vivataam Pre-ABP',       a: '6th Best Novice Speaker',                             type: 'individual' },
+        { t: 'Angkor WSDC',            a: 'Open Semifinalist',                                    type: 'team'       },
+        { t: 'Angkor WSDC',            a: '7th Best Open Speaker',                               type: 'individual' },
+      ],
+      2024: [
+        { t: 'Sophistry WSDC',         a: 'Grand Finalist',                                       type: 'team'       },
+        { t: 'Sophistry WSDC',         a: '2nd Best Speaker',                                    type: 'individual' },
+        { t: 'HPDU',                   a: '2nd Best Team',                                        type: 'team'       },
+        { t: 'HPDU',                   a: '10th Best Open Speaker',                              type: 'individual' },
+        { t: 'TSO 2024',               a: 'Open Semifinalist',                                    type: 'team'       },
+        { t: 'TSO 2024',               a: '7th Best Novice Speaker',                             type: 'individual' },
+        { t: 'Henda',                  a: '2nd Best Attack Speaker',                             type: 'individual' },
+        { t: 'Indo-Pacific ABP',       a: '7th Best Novice Team',                                type: 'team'       },
+        { t: 'Indo-Pacific ABP',       a: '13th Best Novice Speaker',                            type: 'individual' },
+        { t: 'Mixidea',                a: '10th Best Team',                                       type: 'team'       },
+      ],
+    };
+
+    /* ── Render year blocks ─────────────────────────────────── */
+    function renderDebate() {
+      const list = document.getElementById('yearList');
+      list.innerHTML = '';
+
+      Object.keys(DATA)
+        .sort((a, b) => b - a)
+        .forEach(year => {
+          const items = DATA[year];
+          const uniq  = new Set(items.map(i => i.t)).size;
+
+          const block = document.createElement('div');
+          block.className = 'yr-block open';
+          block.id = `yr-${year}`;
+
+          block.innerHTML = `
+            <button class="yr-btn" onclick="toggleYear('${year}')"
+                    aria-expanded="true" aria-controls="yrb-${year}">
+              <div class="yr-left">
+                <span class="yr-label">${year}</span>
+                <span class="yr-pill">${uniq} tournament${uniq !== 1 ? 's' : ''}</span>
+              </div>
+              <span class="yr-arrow" aria-hidden="true">▼</span>
+            </button>
+            <div class="yr-body" id="yrb-${year}" role="region" aria-label="${year} achievements">
+              <div class="yr-inner">
+                ${items.map(({ t, a, type }) => `
+                  <div class="ach" data-type="${type}">
+                    <div class="ach-dot ${type}" aria-hidden="true"></div>
+                    <div class="ach-body">
+                      <div class="ach-tournament">${t}</div>
+                      <div class="ach-award">${a}</div>
+                    </div>
+                    <span class="ach-badge ${type}">
+                      ${type === 'team' ? 'Team' : 'Speaker'}
+                    </span>
+                  </div>
+                `).join('')}
+              </div>
+            </div>`;
+
+          list.appendChild(block);
+        });
+    }
+
+    /* ── Year accordion toggle ──────────────────────────────── */
+    function toggleYear(year) {
+      const block = document.getElementById(`yr-${year}`);
+      const isOpen = block.classList.toggle('open');
+      block.querySelector('.yr-btn').setAttribute('aria-expanded', isOpen);
+    }
+    window.toggleYear = toggleYear;
+
+    /* ── Filter chips ───────────────────────────────────────── */
+    document.addEventListener('click', e => {
+      const btn = e.target.closest('.f-btn');
+      if (!btn) return;
+      document.querySelectorAll('.f-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const f = btn.dataset.filter;
+      document.querySelectorAll('.ach').forEach(el => {
+        el.classList.toggle('hidden', f !== 'all' && el.dataset.type !== f);
+      });
+    });
+
+    /* ── Tab switching ──────────────────────────────────────── */
+    function switchTab(id) {
+      document.querySelectorAll('.nav-tab').forEach(t => {
+        const active = t.dataset.tab === id;
+        t.classList.toggle('active', active);
+        t.setAttribute('aria-selected', active);
+      });
+      document.querySelectorAll('.section').forEach(s => {
+        s.classList.toggle('active', s.id === id);
+      });
+    }
+    window.switchTab = switchTab;
+
+    document.querySelectorAll('.nav-tab').forEach(tab => {
+      tab.addEventListener('click', () => switchTab(tab.dataset.tab));
+    });
+
+    /* ── Theme ──────────────────────────────────────────────── */
+    const themeBtn = document.getElementById('themeBtn');
+
+    function setTheme(dark) {
+      document.body.classList.toggle('dark', dark);
+      themeBtn.textContent = dark ? '☀️' : '🌙';
+      themeBtn.setAttribute('aria-label', dark ? 'Switch to light mode' : 'Switch to dark mode');
+    }
+
+    const stored = localStorage.getItem('theme');
+    const sysDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    setTheme(stored ? stored === 'dark' : sysDark);
+
+    themeBtn.addEventListener('click', () => {
+      const dark = !document.body.classList.contains('dark');
+      setTheme(dark);
+      localStorage.setItem('theme', dark ? 'dark' : 'light');
+    });
+
+    /* ── Image lightbox ─────────────────────────────────────── */
+    const lightbox = document.getElementById('lightbox');
+    const lbImg    = document.getElementById('lbImg');
+    const lbClose  = document.getElementById('lbClose');
+
+    document.addEventListener('click', e => {
+      const img = e.target.closest('.proj-img');
+      if (!img) return;
+      lbImg.src = img.src;
+      lbImg.alt = img.alt;
+      lightbox.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    });
+
+    function closeLightbox() {
+      lightbox.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    lbClose.addEventListener('click', closeLightbox);
+    lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+    /* ── Init ───────────────────────────────────────────────── */
+    renderDebate();
+  </script>
+
+</body>
+</html>
