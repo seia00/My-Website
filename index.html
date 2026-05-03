@@ -8,8 +8,9 @@
   <link rel="icon" href="pictures/shinji.jpg" type="image/jpeg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <script type="module" src="https://unpkg.com/@splinetool/viewer@1.12.90/build/spline-viewer.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
 
   <style>
     /* ============================================================
@@ -241,43 +242,58 @@
     }
 
     /* ============================================================
-       HERO
+       HERO — two-column grid, WebGL left, bird right
     ============================================================ */
     #welcome.section {
       max-width: 100%;
-      padding: 0 0 0 max(48px, 5vw);
+      padding: 0;
       position: relative;
       min-height: calc(100vh - var(--nav-h));
       overflow: hidden;
-      /* Two-column grid: left = text card, right = open canvas */
       display: grid;
-      grid-template-columns: minmax(320px, 480px) 1fr;
-      align-items: center;
+      grid-template-columns: minmax(340px, 520px) 1fr;
+      align-items: stretch;
       background: #050508;
     }
 
-    /* Bird canvas fills the ENTIRE section behind both columns */
+    /* Spline bird — absolute, fills whole section, z-index 0 */
     .hero-spline {
       position: absolute;
       inset: 0;
       z-index: 0;
       pointer-events: none;
     }
-    .hero-spline spline-viewer {
+    .hero-spline spline-viewer { width: 100%; height: 100%; display: block; }
+
+    /* Left panel — column 1, contains WebGL canvas + text */
+    .hero-left {
+      grid-column: 1;
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      min-height: calc(100vh - var(--nav-h));
+    }
+
+    /* WebGL canvas — fills hero-left absolutely */
+    #glCanvas {
+      position: absolute;
+      inset: 0;
       width: 100%;
       height: 100%;
       display: block;
+      z-index: 0;
     }
 
-    /* Text card sits in grid column 1 only */
+    /* Text — above canvas */
     .hero-content {
       position: relative;
-      z-index: 1;
-      grid-column: 1;
-      padding: 80px 0;
+      z-index: 2;
+      padding: 72px max(32px, 5vw);
+      width: 100%;
     }
 
-    /* Glass card strictly bounded to column 1 */
+    /* Glass card — kept for other sections */
     .glass-card {
       background: var(--glass-bg);
       backdrop-filter: var(--glass-blur);
@@ -286,12 +302,82 @@
       border-radius: var(--r-xl);
       padding: 40px 44px;
       box-shadow: var(--glow-cyan), 0 8px 40px rgba(0,0,0,0.5);
-      /* mask fades the right edge of the glass so it bleeds into the bird */
-      -webkit-mask-image: linear-gradient(to right, black 78%, transparent 100%);
-      mask-image: linear-gradient(to right, black 78%, transparent 100%);
       position: relative;
-      overflow: visible;
+      overflow: hidden;
     }
+
+    /* ── Hero Typography ── */
+    .hero-heading {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(48px, 7.5vw, 80px);
+      font-weight: 900;
+      letter-spacing: -2px;
+      line-height: 1.05;
+      margin-bottom: 24px;
+      display: flex;
+      flex-direction: column;
+    }
+    .hero-heading .line { display: block; }
+    .hero-heading .char {
+      display: inline-block;
+      color: var(--acc);
+      will-change: transform, opacity, filter;
+    }
+    /* Applied by JS after coalesce animation finishes */
+    .hero-heading.assembled {
+      background: var(--grad-accent);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-heading.assembled .char { color: inherit; }
+
+    .hero-tag {
+      font-family: 'Space Mono', 'Courier New', monospace;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--acc);
+      margin-bottom: 30px;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      opacity: 0; /* animated in by GSAP */
+    }
+    .hero-tag::before {
+      content: '';
+      display: inline-block;
+      width: 18px; height: 1.5px;
+      background: var(--acc);
+      border-radius: 2px;
+    }
+
+    .hero-roles {
+      font-family: 'Space Mono', 'Courier New', monospace;
+      font-size: 11.5px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--acc);
+      margin-bottom: 22px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 4px 0;
+    }
+    .hero-roles .sep { color: var(--t3); margin: 0 10px; }
+    .hero-roles .role-char { display: inline-block; }
+
+    .hero-desc {
+      font-size: 14px;
+      color: var(--t2);
+      line-height: 1.78;
+      margin-bottom: 40px;
+      max-width: 360px;
+      opacity: 0; /* animated in */
+    }
+    .hero-ctas { opacity: 0; } /* animated in */
     .glass-card::before {
       content: '';
       position: absolute;
@@ -917,20 +1003,15 @@
       .section { padding: 52px var(--pad-x) 64px; }
       #welcome.section {
         grid-template-columns: 1fr;
-        padding: 0 var(--pad-x);
         min-height: 100svh;
       }
-      .hero-content { padding: 80px 0; }
-      .glass-card {
-        padding: 32px 24px;
-        -webkit-mask-image: none;
-        mask-image: none;
-      }
+      .hero-left { min-height: 100svh; }
+      .hero-content { padding: 72px var(--pad-x); }
+      .hero-heading { font-size: clamp(42px, 12vw, 62px); }
+      .hero-desc { max-width: 100%; }
 
       .nav-inner { gap: 10px; }
       .nav-sep   { display: none; }
-
-      .hero h1 { letter-spacing: -2px; }
 
       .stat-row { gap: 8px; }
       .stat-n   { font-size: 26px; }
@@ -979,17 +1060,25 @@
 
     <!-- Welcome ───────────────────────── -->
     <section class="section active" id="welcome" role="tabpanel" aria-label="Welcome">
+
+      <!-- Bird: full-section background, right half visible, unobstructed -->
       <div class="hero-spline" aria-hidden="true">
         <spline-viewer url="https://prod.spline.design/hrGEQPyiRD3OpFNk/scene.splinecode" loading-anim-type="none"></spline-viewer>
       </div>
-      <div class="hero-content">
-        <div class="hero glass-card">
-          <div class="hero-tag" aria-hidden="true">Portfolio · 2024–2025</div>
-          <h1>Hi, I'm<br>Seia.</h1>
+
+      <!-- Left panel: WebGL liquid glass + text -->
+      <div class="hero-left">
+        <canvas id="glCanvas" aria-hidden="true"></canvas>
+        <div class="hero-content">
+          <div class="hero-tag">Portfolio · 2024–2025</div>
+          <h1 class="hero-heading" aria-label="Hi, I'm Seia.">
+            <span class="line">Hi, I'm</span>
+            <span class="line">Seia.</span>
+          </h1>
           <p class="hero-roles">
-            <span>Debater</span><span class="sep" aria-hidden="true">·</span>
-            <span>Developer</span><span class="sep" aria-hidden="true">·</span>
-            <span>Creator</span>
+            <span class="role-word">Debater</span><span class="sep" aria-hidden="true">·</span>
+            <span class="role-word">Developer</span><span class="sep" aria-hidden="true">·</span>
+            <span class="role-word">Creator</span>
           </p>
           <p class="hero-desc">
             I compete in international debate tournaments, build tools for
@@ -1001,6 +1090,7 @@
           </div>
         </div>
       </div>
+
     </section>
 
     <!-- Debate ────────────────────────── -->
@@ -1365,6 +1455,221 @@
 
     /* ── Init ───────────────────────────────────────────────── */
     renderDebate();
+
+    /* ── Hero Assembly Animation (GSAP) ─────────────────────── */
+    function initHeroAnim() {
+      if (typeof gsap === 'undefined') { setTimeout(initHeroAnim, 80); return; }
+
+      /* split heading lines into individual char spans */
+      document.querySelectorAll('.hero-heading .line').forEach(line => {
+        const txt = line.textContent;
+        line.setAttribute('aria-label', txt.trim());
+        line.innerHTML = txt.split('').map(ch =>
+          `<span class="char" aria-hidden="true">${ch === ' ' ? '&nbsp;' : ch}</span>`
+        ).join('');
+      });
+
+      /* split role words into individual char spans */
+      document.querySelectorAll('.hero-roles .role-word').forEach(w => {
+        const txt = w.textContent;
+        w.innerHTML = txt.split('').map(ch =>
+          `<span class="role-char">${ch}</span>`
+        ).join('');
+      });
+
+      const tl = gsap.timeline({ delay: 0.15 });
+
+      /* eyebrow tag slides in */
+      tl.to('.hero-tag', {
+        opacity: 1, x: 0, duration: 0.55, ease: 'power3.out',
+      });
+
+      /* heading chars coalesce from scattered glowing particles */
+      tl.from('.hero-heading .char', {
+        opacity: 0,
+        scale: 0.08,
+        filter: 'blur(18px)',
+        x: () => gsap.utils.random(-60, 60),
+        y: () => gsap.utils.random(-50, 50),
+        rotation: () => gsap.utils.random(-45, 45),
+        stagger: { each: 0.038, from: 'random', ease: 'power1.inOut' },
+        duration: 1.05,
+        ease: 'expo.out',
+      }, '-=0.25')
+
+      /* once all chars land, switch to gradient fill */
+      .call(() => {
+        document.querySelector('.hero-heading').classList.add('assembled');
+      })
+
+      /* role chars type in from left */
+      .from('.hero-roles .role-char', {
+        opacity: 0, y: 10, filter: 'blur(5px)',
+        stagger: { each: 0.02, from: 'start' },
+        duration: 0.42, ease: 'power2.out',
+      }, '-=0.15')
+
+      /* desc + ctas fade up */
+      .to('.hero-desc', {
+        opacity: 1, y: 0, duration: 0.6, ease: 'power2.out',
+      }, '-=0.1')
+      .to('.hero-ctas', {
+        opacity: 1, y: 0, duration: 0.55, ease: 'power2.out',
+      }, '-=0.35');
+    }
+
+    if (document.readyState === 'complete') { initHeroAnim(); }
+    else { window.addEventListener('load', initHeroAnim); }
+
+  </script>
+
+  <!-- ── WebGL Liquid Glass ─────────────────────────────────── -->
+  <script type="module">
+    import * as THREE from 'https://unpkg.com/three@0.157.0/build/three.module.js';
+
+    const canvas = document.getElementById('glCanvas');
+    if (!canvas) throw new Error('glCanvas not found');
+
+    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+
+    const scene  = new THREE.Scene();
+    const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+
+    const uniforms = {
+      uTime:       { value: 0.0 },
+      uMouse:      { value: new THREE.Vector2(-1, -1) },
+      uResolution: { value: new THREE.Vector2(400, 700) },
+    };
+
+    const VERT = `
+      varying vec2 vUv;
+      void main() { vUv = uv; gl_Position = vec4(position, 1.0); }
+    `;
+
+    const FRAG = `
+      precision highp float;
+      uniform float uTime;
+      uniform vec2  uMouse;
+      uniform vec2  uResolution;
+      varying vec2  vUv;
+
+      float hash(vec2 p){ return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453); }
+      vec2  hash2(vec2 p){
+        return fract(sin(vec2(dot(p,vec2(127.1,311.7)),dot(p,vec2(269.5,183.3))))*43758.5453);
+      }
+      float sn(vec2 p){
+        vec2 i=floor(p), f=fract(p), u=f*f*(3.-2.*f);
+        return mix(mix(hash(i),hash(i+vec2(1,0)),u.x),
+                   mix(hash(i+vec2(0,1)),hash(i+vec2(1)),u.x),u.y);
+      }
+      float fbm(vec2 p){
+        float v=0.,a=.5;
+        for(int i=0;i<5;i++){v+=a*sn(p);p*=2.01;a*=.5;}
+        return v;
+      }
+      float voronoi(vec2 x){
+        vec2 n=floor(x),f=fract(x); float d=8.;
+        for(int j=-1;j<=1;j++) for(int i=-1;i<=1;i++){
+          vec2 g=vec2(float(i),float(j));
+          vec2 o=hash2(n+g);
+          o=.5+.5*sin(uTime*.55+6.2831*o);
+          d=min(d,dot(g+o-f,g+o-f));
+        }
+        return sqrt(d);
+      }
+
+      void main(){
+        vec2 uv = vUv;
+        float t = uTime * 0.38;
+
+        /* layered FBM warp — liquid ripple */
+        vec2 warp = vec2(
+          fbm(uv*3.0 + vec2(t, t*0.7)),
+          fbm(uv*3.0 + vec2(t*0.8, t*1.1) + 5.2)
+        ) * 0.042;
+        vec2 d = uv + warp;
+
+        /* chromatic aberration — split RGB by edge distance */
+        vec2  ctr  = vec2(0.5);
+        vec2  dir  = uv - ctr;
+        float edge = length(dir);
+        float abr  = 0.014 * (1.0 + edge * 1.6);
+
+        float r = mix(0.00, 0.07, fbm((d + dir*abr) * 4.0 + t*0.18));
+        float g = mix(0.04, 0.21, fbm( d             * 4.0 + t*0.18 + 1.5));
+        float b = mix(0.10, 0.44, fbm((d - dir*abr) * 4.0 + t*0.18 + 3.0));
+        vec3 col = vec3(r, g, b);
+
+        /* caustics — animated voronoi light patterns */
+        float cv1  = voronoi(d * 5.5);
+        float cv2  = voronoi(d * 8.2 + vec2(0.4));
+        float caus = pow(max(0.0, 0.76 - cv1*cv2), 3.0) * 0.40;
+        vec3  cTint = mix(vec3(0.0, 0.55, 1.0), vec3(0.0, 1.0, 0.65), sn(d*8.+t));
+        col += cTint * caus;
+
+        /* fresnel rim glow */
+        col += vec3(0.0, 0.45, 0.9) * pow(edge, 1.75) * 0.22;
+
+        /* top-edge light bleed */
+        col += vec3(0.08, 0.75, 1.0) * max(0.0, 1.0 - vUv.y * 9.0) * 0.30;
+
+        /* right-edge fade so panel bleeds into the bird naturally */
+        float rightFade = smoothstep(1.0, 0.72, vUv.x);
+        col *= rightFade;
+        float alpha = (0.88 + sn(uv*28.+t)*0.04) * rightFade;
+
+        /* hover prism flare */
+        float md    = length(uv - uMouse);
+        float flare = pow(max(0.0, 1.0 - md / 0.42), 6.0) * 0.85;
+        float ang   = atan(dir.y, dir.x);
+        vec3  prism = 0.5 + 0.5*vec3(
+          cos(ang + uTime),
+          cos(ang + uTime + 2.094),
+          cos(ang + uTime + 4.189)
+        );
+        col += prism * flare;
+
+        gl_FragColor = vec4(col, alpha);
+      }
+    `;
+
+    const mat = new THREE.ShaderMaterial({
+      uniforms,
+      vertexShader:   VERT,
+      fragmentShader: FRAG,
+      transparent:    true,
+    });
+
+    scene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), mat));
+
+    function resize() {
+      const p = canvas.parentElement;
+      const w = p.offsetWidth, h = p.offsetHeight;
+      renderer.setSize(w, h, false);
+      uniforms.uResolution.value.set(w, h);
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    /* mouse tracking for hover flare */
+    canvas.addEventListener('mousemove', e => {
+      const r = canvas.getBoundingClientRect();
+      uniforms.uMouse.value.set(
+        (e.clientX - r.left) / r.width,
+        1.0 - (e.clientY - r.top) / r.height
+      );
+    });
+    canvas.addEventListener('mouseleave', () => uniforms.uMouse.value.set(-1, -1));
+
+    /* render loop */
+    let t0 = null;
+    (function tick(ts) {
+      requestAnimationFrame(tick);
+      if (t0 === null) t0 = ts;
+      uniforms.uTime.value = (ts - t0) * 0.001;
+      renderer.render(scene, camera);
+    })(performance.now());
   </script>
 
 </body>
