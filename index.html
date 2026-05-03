@@ -256,10 +256,13 @@
       background: #050508;
     }
 
-    /* Spline bird — absolute, fills whole section, z-index 0 */
+    /* Spline bird — right half of section, unobstructed */
     .hero-spline {
       position: absolute;
-      inset: 0;
+      left: 42%;
+      right: -8%;
+      top: 0;
+      bottom: 0;
       z-index: 0;
       pointer-events: none;
     }
@@ -1497,9 +1500,16 @@
         ease: 'expo.out',
       }, '-=0.25')
 
-      /* once all chars land, switch to gradient fill */
+      /* once all chars land, unwrap spans then apply gradient */
       .call(() => {
-        document.querySelector('.hero-heading').classList.add('assembled');
+        const heading = document.querySelector('.hero-heading');
+        heading.querySelectorAll('.line').forEach(line => {
+          const text = [...line.querySelectorAll('.char')]
+            .map(c => c.textContent === ' ' ? ' ' : c.textContent)
+            .join('');
+          line.textContent = text;
+        });
+        heading.classList.add('assembled');
       })
 
       /* role chars type in from left */
