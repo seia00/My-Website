@@ -17,11 +17,11 @@
        DESIGN TOKENS
     ============================================================ */
     :root {
-      /* Surface — deep black */
-      --bg:   #050508;
-      --bg-2: #080810;
-      --bg-3: #0d0d1a;
-      --bg-4: #111124;
+      /* Surface — jet black */
+      --bg:   #000000;
+      --bg-2: #020204;
+      --bg-3: #050508;
+      --bg-4: #08080f;
 
       /* Text — cool whites & cyans */
       --t1: #e8f4f8;
@@ -268,7 +268,7 @@
       display: grid;
       grid-template-columns: minmax(340px, 520px) 1fr;
       align-items: stretch;
-      background: #050508;
+      background: #000000;
     }
 
     /* Spline bird — right half of section, unobstructed */
@@ -1621,28 +1621,28 @@
         float edge = length(dir);
         float abr  = 0.014 * (1.0 + edge * 1.6);
 
-        float r = mix(0.00, 0.07, fbm((d + dir*abr) * 4.0 + t*0.18));
-        float g = mix(0.04, 0.21, fbm( d             * 4.0 + t*0.18 + 1.5));
-        float b = mix(0.10, 0.44, fbm((d - dir*abr) * 4.0 + t*0.18 + 3.0));
+        float r = mix(0.00, 0.02, fbm((d + dir*abr) * 4.0 + t*0.18));
+        float g = mix(0.00, 0.05, fbm( d             * 4.0 + t*0.18 + 1.5));
+        float b = mix(0.00, 0.10, fbm((d - dir*abr) * 4.0 + t*0.18 + 3.0));
         vec3 col = vec3(r, g, b);
 
-        /* caustics — animated voronoi light patterns */
+        /* caustics — keep subtle against black */
         float cv1  = voronoi(d * 5.5);
         float cv2  = voronoi(d * 8.2 + vec2(0.4));
-        float caus = pow(max(0.0, 0.76 - cv1*cv2), 3.0) * 0.40;
-        vec3  cTint = mix(vec3(0.0, 0.55, 1.0), vec3(0.0, 1.0, 0.65), sn(d*8.+t));
+        float caus = pow(max(0.0, 0.76 - cv1*cv2), 3.0) * 0.18;
+        vec3  cTint = mix(vec3(0.0, 0.4, 0.8), vec3(0.0, 0.8, 0.5), sn(d*8.+t));
         col += cTint * caus;
 
-        /* fresnel rim glow */
-        col += vec3(0.0, 0.45, 0.9) * pow(edge, 1.75) * 0.22;
+        /* fresnel rim — minimal, just edge definition */
+        col += vec3(0.0, 0.3, 0.7) * pow(edge, 2.2) * 0.10;
 
-        /* top-edge light bleed */
-        col += vec3(0.08, 0.75, 1.0) * max(0.0, 1.0 - vUv.y * 9.0) * 0.30;
+        /* top-edge light bleed — very subtle */
+        col += vec3(0.04, 0.5, 0.8) * max(0.0, 1.0 - vUv.y * 9.0) * 0.12;
 
-        /* right-edge fade so panel bleeds into the bird naturally */
-        float rightFade = smoothstep(1.0, 0.72, vUv.x);
+        /* right-edge fade — blend seamlessly into Spline black */
+        float rightFade = smoothstep(1.0, 0.65, vUv.x);
         col *= rightFade;
-        float alpha = (0.88 + sn(uv*28.+t)*0.04) * rightFade;
+        float alpha = (0.92 + sn(uv*28.+t)*0.02) * rightFade;
 
         /* hover prism flare */
         float md    = length(uv - uMouse);
