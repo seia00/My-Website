@@ -59,7 +59,7 @@
       --acc-blue: #1a8cff;
 
       /* Layout */
-      --nav-h:  58px;
+      --nav-h:  68px;
       --max-w:  860px;
       --pad-x:  24px;
 
@@ -103,75 +103,90 @@
       top: 0;
       z-index: 200;
       height: var(--nav-h);
-      background: rgba(5,5,8,0.75);
-      backdrop-filter: blur(20px) saturate(200%);
-      -webkit-backdrop-filter: blur(20px) saturate(200%);
-      border-bottom: 1px solid var(--glass-border);
-      transition: border-color var(--dur) var(--ease);
+      background: rgba(5,5,8,0.92);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border-bottom: 1px solid rgba(80,220,255,0.08);
     }
 
     .nav-inner {
-      max-width: var(--max-w);
-      margin: 0 auto;
-      padding: 0 var(--pad-x);
+      width: 100%;
+      padding: 0 max(32px, 4vw);
       height: 100%;
       display: flex;
-      align-items: center;
-      gap: 16px;
+      align-items: stretch;
     }
 
+    /* Brand — Space Mono, all-caps, precise tracking */
     .nav-brand {
-      font-size: 14.5px;
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
       font-weight: 700;
+      letter-spacing: 0.20em;
+      text-transform: uppercase;
       color: var(--t1);
-      letter-spacing: -0.4px;
       white-space: nowrap;
       flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      padding-right: 36px;
     }
 
-    /* Dot separator */
+    /* Thin vertical rule separating brand from tabs */
     .nav-sep {
-      width: 4px;
-      height: 4px;
-      border-radius: 50%;
-      background: var(--b2);
+      width: 1px;
+      height: 20px;
+      background: rgba(80,220,255,0.18);
+      align-self: center;
       flex-shrink: 0;
+      border-radius: 0;
+      margin-right: 4px;
     }
 
     .nav-tabs {
       flex: 1;
       display: flex;
-      align-items: center;
-      gap: 1px;
+      align-items: stretch;
       overflow-x: auto;
       scrollbar-width: none;
       -webkit-overflow-scrolling: touch;
     }
     .nav-tabs::-webkit-scrollbar { display: none; }
 
+    /* Tabs — squared, underline-based active indicator */
     .nav-tab {
       display: inline-flex;
       align-items: center;
-      padding: 5px 11px;
-      border-radius: var(--r-s);
-      font-size: 13px;
+      padding: 0 18px;
+      border-radius: 0;
+      font-size: 12px;
       font-weight: 500;
-      color: var(--t2);
+      letter-spacing: 0.06em;
+      color: rgba(110,198,224,0.55);
       white-space: nowrap;
       background: none;
       border: none;
-      transition: background var(--dur) var(--ease), color var(--dur) var(--ease);
+      border-bottom: 2px solid transparent;
+      transition: color var(--dur) var(--ease),
+                  background var(--dur) var(--ease),
+                  border-color var(--dur) var(--ease);
       outline: none;
     }
-    .nav-tab:hover { color: var(--t1); background: rgba(0,212,255,0.06); }
+    .nav-tab:hover {
+      color: var(--t1);
+      background: rgba(0,212,255,0.04);
+      border-bottom-color: rgba(0,212,255,0.28);
+    }
     .nav-tab.active {
       color: #00d4ff;
-      background: rgba(0,212,255,0.10);
+      background: rgba(0,212,255,0.06);
+      border-bottom-color: #00d4ff;
       font-weight: 600;
+      letter-spacing: 0.06em;
     }
     .nav-tab:focus-visible {
-      outline: 2px solid var(--acc);
-      outline-offset: 2px;
+      outline: 1px solid var(--acc);
+      outline-offset: -1px;
     }
 
     /* ============================================================
